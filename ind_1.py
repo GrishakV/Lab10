@@ -101,6 +101,7 @@ if __name__ == '__main__':
         elif 'json' in parts[1]:
             with open(parts[1], 'r') as f:
                 people = json.load(f)
+                return people
 
     def f_save():
         parts = command.split(' ', maxsplit=1)
