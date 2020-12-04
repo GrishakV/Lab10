@@ -4,26 +4,23 @@
 import math
 
 
-def cylinder(r, h):
-    def circle():
-        result = side + 2 * (math.pi * r ** 2)
-        return result
+def cylinder(r, h, full=True):
+    def circle(r):
+        return math.pi * (r ** 2)
 
-    side = 2 * math.pi * r * h
+    s_cylinder = 2 * math.pi * r * h
 
-    a = input('Получить площадь полностью? да/нет ')
-
-    if a == 'да':
-        circle()
-        full = circle()
-        print(full)
-
-    elif a == 'нет':
-        print(side)
+    if full:
+        return s_cylinder + 2 * circle(r)
+    else:
+        print(s_cylinder)
 
 
 if __name__ == '__main__':
-    x = int(input('Введите высоту: '))
-    y = int(input('Введите радиус: '))
+    s_circle = 0
+    a = float(input("Введите радиус: "))
+    b = float(input("Введите высоту: "))
 
-    cylinder(x, y)
+    c = input("side or full?")
+    s = cylinder(a, b, full=(c == 'full'))
+    print(s)

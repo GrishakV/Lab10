@@ -14,10 +14,7 @@ import json
 import xml.etree.ElementTree as ET
 
 
-def f_add():
-    name = input("Фамилия, Имя ")
-    phone = input("Номер телефона ")
-    birthday = list(map(int, input("Дата рождения в формате: дд,мм,гггг ").split(',')))
+def f_add(person, name, phone, birthday):
 
     if 1 >= birthday[1] > 12:
         print("Такого месяца не существует!", file=sys.stderr)
@@ -43,7 +40,8 @@ def f_add():
         people.sort(key=lambda item: item.get('name', ''))
 
 
-def f_list():
+def f_list(people):
+    table = []
     line = '+-{}-+-{}-+-{}-+-{}-+-{}-+-{}-+'.format(
         '-' * 4,
         '-' * 30,
@@ -52,8 +50,8 @@ def f_list():
         '-' * 8,
         '-' * 8
     )
-    print(line)
-    print(
+    table.append(line)
+    table.append(
         '| {:^3} | {:^30} | {:^20} | {:^8} | {:^8} | {:^8} |'.format(
             "№",
             "ФИО",
@@ -63,10 +61,10 @@ def f_list():
             "Год"
         )
     )
-    print(line)
+    table.append(line)
 
     for idx, person in enumerate(people, 1):
-        print(
+        table.append(
             '| {:>4} | {:<30} | {:<20} | {:>8} | {:>8} | {:>8} |'.format(
                 idx,
                 person.get('name', ''),
@@ -76,7 +74,9 @@ def f_list():
                 person.get('birthday[2]', '')
             )
         )
-    print(line)
+    table.append(line)
+
+    return '\n'.join(table)
 
 
 def f_select():
@@ -141,10 +141,14 @@ if __name__ == '__main__':
             break
 
         elif command == 'add':
-            f_add()
+            name = input("Фамилия, Имя ")
+            phone = input("Номер телефона ")
+            birthday = list(map(int, input("Дата рождения в формате: дд,мм,гггг ").split(',')))
+
+            f_add(people, name, phone, birthday)
 
         elif command == 'list':
-            f_list()
+            print(f_list(people))
 
         elif command.startswith('select '):
             f_select()
