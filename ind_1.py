@@ -14,7 +14,7 @@ import json
 import xml.etree.ElementTree as ET
 
 
-def f_add(person, name, phone, birthday):
+def f_add(people, name, phone, birthday):
 
     if 1 >= birthday[1] > 12:
         print("Такого месяца не существует!", file=sys.stderr)
@@ -79,41 +79,26 @@ def f_list(people):
     return '\n'.join(table)
 
 
-def f_select():
-    parts = command.split(' ', maxsplit=2)
-    month = int(parts[1])
+def f_select(month):
 
-    count = 0
+    result = []
     for person in people:
         birthday = person.get('birthday', [])
         if birthday:
             if birthday[1] == month:
-                count += 1
-                print(f'{count}, {person.get("name", "")}')
+                result.append(person)
 
-    if count == 0:
-        print(f"Именинников в {month} месяце нетю :(")
+    return result
 
 
-def f_load():
-    parts = command.split(' ', maxsplit=1)
-
-    if 'xml' in parts[1]:
-        print('здесь должна быть магия')
-    elif 'json' in parts[1]:
-        with open(parts[1], 'r') as f:
-            people = json.load(f)
-            return people
+def f_load(filename):
+    with open(filename, 'r') as fin:
+        return json.load(fin)
 
 
-def f_save():
-    parts = command.split(' ', maxsplit=1)
-
-    if 'xml' in parts[1]:
-        print('здесь должна быть магия')
-    elif 'json' in parts[1]:
-        with open(parts[1], 'w')as f:
-            json.dump(people, f)
+def f_save(people, filename):
+    with open(filename, 'w') as fout:
+        json.dump(people, fout)
 
 
 def f_help():
@@ -151,13 +136,22 @@ if __name__ == '__main__':
             print(f_list(people))
 
         elif command.startswith('select '):
-            f_select()
+            parts = command.split(' ', maxsplit=2)
+            selected = f_select(people, int(parts[1]))
+
+            if selected:
+                for idx, person in enumerate(selected, 1):
+                    print(person.get('name', ''))
+            else:
+                print('Именинников в выбранном месяца нет')
 
         elif command.startswith('load '):
-            people = f_load()
+            parts = command.split(maxsplit=1)
+            people = f_load(parts[1])
 
         elif command.startswith('save '):
-            f_save()
+            parts = command.split(maxsplit=1)
+            f_save(people, parts[1])
 
         elif command == 'help':
             f_help()
